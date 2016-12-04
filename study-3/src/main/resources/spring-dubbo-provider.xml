@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+
+
+    <!-- 这是服务器端，服务提供者的配置dubbo-->
+
+    <dubbo:application name="chenhualong_test" owner="LemonMT" organization="zbj"/>
+
+    <dubbo:registry protocol="zookeeper" address="zookeeper://127.0.0.1:2181"/>
+
+
+    <!--这里指定采用dubbo来传输，也可以是 rmi-->
+    <dubbo:protocol name="dubbo" port="20880" />
+
+
+    <!--利用版本号来管理同一个接口，不同实现
+        如果加上 execute="10" 指并发不能超过10个。
+        version="1.0.1"进行解析版本号。
+
+    -->
+    <dubbo:service interface="com.lemon.chen.dubbo.api.UserInfoAPI" ref="userInfoBIZ" group="first"  version="1.0.1"/>
+
+    <dubbo:service interface="com.lemon.chen.dubbo.api.UserInfoAPI" ref="userInfo2BIZ" group="second"/>
+
+
+    <dubbo:provider timeout="2000" retries="0" />
+
+    <!--增加随机令牌，  token="123456" 这类写死也可以，
+     作用：
+     1.防止消费者绕过 注册中心访问提供者
+     2.在注册中心控制权限，以决定要不要下发令牌给消费者。
+     3.注册中心可灵活改变授权方式，而不需要修改或升级提供者。
+     -->
+
+    <!--<dubbo:provider  token="true"/>-->
+
+
+
+    <!--返回list进行解析
+
+       cluster="failover" 没有重试机制。
+       loadbalance="consustentHash" 一致性hash
+    -->
+    <!--<dubbo:reference interface="" cluster=""  loadbalance="">
+        <dubbo:method name="xxx" merger="true"/>
+    </dubbo:reference> -->
+</beans>
